@@ -2,6 +2,14 @@ from std/strutils import addf, toHex
 from std/unicode import Rune
 from std/syncio import writeFile
 import std/[assertions, paths]
+
+when defined(mingw):
+  import std/private/globs
+  from std/private/ospaths2 import joinPath
+  func `/`*(head, tail: Path): Path {.inline.} =
+    joinPath(head.string, tail.string).nativeToUnixPath.Path
+  {.passC: "-I/usr/x86_64-w64-mingw32/include".}
+
 const raylibDir = currentSourcePath().Path.parentDir / Path"raylib"
 
 {.passC: "-I" & raylibDir.string.}
